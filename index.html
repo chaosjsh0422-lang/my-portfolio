@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>교육 및 연구 프로젝트 포트폴리오</title>
-  <!-- 고품질 한글 웹폰트 3종 CDN -->
+  <!-- 한글 최적화 웹폰트 -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />
   <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet" />
 
@@ -18,7 +18,6 @@
       --text-sub: #64748b;
       --current-font: 'Pretendard', sans-serif;
 
-      /* 클레이모피즘 그림자 토큰 */
       --clay-shadow-card: 10px 10px 22px #cbd5e1, -10px -10px 22px #ffffff;
       --clay-shadow-btn: 5px 5px 10px #cbd5e1, -5px -5px 10px #ffffff;
       --clay-shadow-pressed: inset 3px 3px 6px #cbd5e1, inset -3px -3px 6px #ffffff;
@@ -50,7 +49,6 @@
       width: 100%;
     }
 
-    /* 상단 헤더 */
     header {
       background: var(--clay-card);
       padding: 24px 32px;
@@ -84,7 +82,6 @@
       gap: 12px;
     }
 
-    /* 클레이 폼 컨트롤 */
     select, input[type="text"], input[type="url"], textarea {
       padding: 10px 16px;
       border-radius: 16px;
@@ -100,7 +97,6 @@
       border-color: var(--primary-clay);
     }
 
-    /* 클레이 버튼 */
     .btn {
       padding: 10px 18px;
       border-radius: 16px;
@@ -144,7 +140,6 @@
       border-radius: 12px;
     }
 
-    /* 포트폴리오 그리드 */
     .grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
@@ -217,14 +212,12 @@
 
     .card-file-info {
       font-size: 0.8rem;
-      color: #64748b;
+      color: #475569;
       background: #f1f5f9;
-      padding: 6px 12px;
-      border-radius: 10px;
+      padding: 8px 12px;
+      border-radius: 12px;
       margin-bottom: 14px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
+      word-break: break-all;
     }
 
     .card-bottom {
@@ -247,7 +240,7 @@
       align-items: center;
     }
 
-    /* 모달 대화상자 */
+    /* 모달 */
     .modal-backdrop {
       display: none;
       position: fixed;
@@ -297,10 +290,9 @@
       width: 100%;
     }
 
-    /* 등록 방식 탭/라디오 */
     .radio-group {
       display: flex;
-      gap: 12px;
+      gap: 14px;
       margin-bottom: 10px;
     }
 
@@ -313,22 +305,25 @@
       cursor: pointer;
     }
 
+    /* 드래그 앤 드롭 파일 업로드 영역 */
     .file-upload-box {
-      border: 2px dashed #cbd5e1;
+      border: 2px dashed #94a3b8;
       border-radius: 16px;
-      padding: 16px;
+      padding: 22px 16px;
       text-align: center;
       background: #f8fafc;
       cursor: pointer;
+      transition: background-color 0.2s ease, border-color 0.2s ease;
     }
 
-    .file-upload-box:hover {
+    .file-upload-box.dragover {
+      background: #eef2ff;
       border-color: var(--primary-clay);
     }
 
     .file-status {
       margin-top: 8px;
-      font-size: 0.82rem;
+      font-size: 0.83rem;
       color: #059669;
       font-weight: 600;
     }
@@ -340,7 +335,7 @@
       margin-top: 24px;
     }
 
-    /* 라이브 앱 실행 전용 풀스크린 뷰어 모달 */
+    /* 인라인 러너 모달 */
     .runner-modal {
       display: none;
       position: fixed;
@@ -363,7 +358,6 @@
       display: flex;
       flex-direction: column;
       overflow: hidden;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
     }
 
     .runner-header {
@@ -375,11 +369,6 @@
       border-bottom: 1px solid #e2e8f0;
     }
 
-    .runner-header h3 {
-      font-size: 1.05rem;
-      color: #1e293b;
-    }
-
     .runner-iframe {
       flex: 1;
       width: 100%;
@@ -387,7 +376,6 @@
       background: #ffffff;
     }
 
-    /* 저작권 표기 푸터 */
     footer {
       margin-top: 48px;
       text-align: center;
@@ -407,7 +395,7 @@
     <header>
       <div class="header-title">
         <h1>교육 및 실천 포트폴리오</h1>
-        <p>웹 도구 등록 및 실시간 라이브 시연 아카이브</p>
+        <p>HTML 앱 직접 첨부 및 라이브 시연 아카이브</p>
       </div>
 
       <div class="controls">
@@ -428,7 +416,7 @@
     <p>&copy; 2026 Jung Sung Hun. All Rights Reserved.</p>
   </footer>
 
-  <!-- 등록 및 수정 공용 모달 -->
+  <!-- 등록 및 수정 모달 -->
   <div class="modal-backdrop" id="itemModal">
     <div class="modal">
       <h2 id="modalHeading">새 작품 등록</h2>
@@ -445,11 +433,10 @@
       </div>
 
       <div class="form-group">
-        <label for="itemTitle">작품 / 도구 제목</label>
-        <input type="text" id="itemTitle" placeholder="예: 학급일지 v4 또는 좌석 배치기" />
+        <label for="itemTitle">작품 제목</label>
+        <input type="text" id="itemTitle" placeholder="예: 학급 운영 지원 도구 v4" />
       </div>
 
-      <!-- 등록 방식 선택 -->
       <div class="form-group">
         <label>작품 제공 방식</label>
         <div class="radio-group">
@@ -464,17 +451,17 @@
         </div>
       </div>
 
-      <!-- 파일 첨부 섹션 -->
+      <!-- 개선된 파일 첨부 섹션 -->
       <div class="form-group" id="fileSection">
-        <label for="htmlFileInput">HTML 파일 첨부 (.html, .htm)</label>
-        <div class="file-upload-box" onclick="document.getElementById('htmlFileInput').click()">
-          <p style="font-size: 0.88rem; color: #475569;">클릭하여 단일 HTML 파일 선택</p>
+        <label>HTML 파일 선택 (.html, .htm)</label>
+        <div class="file-upload-box" id="dropZone" onclick="triggerFileInput()">
+          <p style="font-size: 0.9rem; color: #1e293b; font-weight: 600;">📁 클릭하거나 파일을 여기로 끌어다 놓으세요</p>
+          <p style="font-size: 0.78rem; color: #64748b; margin-top: 4px;">단일 HTML 파일 내 자바스크립트/CSS 포함 앱 지원</p>
           <input type="file" id="htmlFileInput" accept=".html, .htm" style="display: none;" onchange="handleFileSelect(event)" />
         </div>
         <div class="file-status" id="fileStatusText"></div>
       </div>
 
-      <!-- 웹 링크 연결 섹션 -->
       <div class="form-group" id="linkSection" style="display: none;">
         <label for="itemLink">라이브 실행 링크 (URL)</label>
         <input type="url" id="itemLink" placeholder="https://..." />
@@ -482,7 +469,7 @@
 
       <div class="form-group">
         <label for="itemDesc">프로젝트 상세 설명</label>
-        <textarea id="itemDesc" rows="4" placeholder="작품의 개발 취지와 핵심 기능을 자유롭게 작성해 주세요."></textarea>
+        <textarea id="itemDesc" rows="4" placeholder="프로젝트의 개발 취지와 핵심 기능을 기록해 주세요."></textarea>
       </div>
 
       <div class="modal-actions">
@@ -492,13 +479,13 @@
     </div>
   </div>
 
-  <!-- 인앱 라이브 샌드박스 실행 뷰어 -->
+  <!-- 라이브 실행 샌드박스 뷰어 -->
   <div class="runner-modal" id="runnerModal">
     <div class="runner-container">
       <div class="runner-header">
-        <h3 id="runnerTitle">라이브 앱 실행</h3>
+        <h3 id="runnerTitle" style="font-size: 1.05rem; color: #1e293b;">라이브 앱 실행</h3>
         <div style="display: flex; gap: 8px;">
-          <button class="btn btn-secondary btn-sm" id="runnerNewTabBtn">새 창에서 열기</button>
+          <button class="btn btn-secondary btn-sm" id="runnerNewTabBtn">새 탭에서 열기</button>
           <button class="btn btn-secondary btn-sm" onclick="closeRunner()">닫기</button>
         </div>
       </div>
@@ -507,50 +494,117 @@
   </div>
 
   <script>
-    const STORAGE_KEY = 'edu_portfolio_items_v2';
+    // 1. IndexedDB 설정 (대용량 HTML 완벽 지원)
+    const DB_NAME = 'EduPortfolioDB';
+    const DB_VERSION = 1;
+    const STORE_NAME = 'portfolio_items';
+    let db = null;
 
-    // 초기 예시 데이터 세트
-    const defaultData = [
-      {
-        id: 1,
-        category: "수업 혁신",
-        title: "과정중심 평가 기록 루브릭",
-        type: "file",
-        fileName: "rubric_tool.html",
-        htmlContent: `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>루브릭</title><style>body{font-family:sans-serif;padding:30px;text-align:center;background:#f0fdf4;color:#166534;}h2{margin-bottom:10px;}.box{background:white;padding:20px;border-radius:12px;display:inline-block;box-shadow:0 4px 6px rgba(0,0,0,0.05);}</style></head><body><div class="box"><h2>과정중심 평가 루브릭 뷰어</h2><p>첨부된 단일 HTML 파일이 독립적인 가상 런타임에서 안전하게 정상 구동되었습니다.</p></div></body></html>`,
-        desc: "학생들의 성취기준 도달 과정을 관찰하고 즉각적인 맞춤 피드백을 기록하는 도구입니다.",
-        date: "2026.09"
-      },
-      {
-        id: 2,
-        category: "업무 자동화",
-        title: "학급 운영 지원 도구 v4",
-        type: "link",
-        link: "https://example.com",
-        desc: "출결 확인, 좌석 배치 및 모둠 구성을 간편하게 제어할 수 있는 경량 웹 앱입니다.",
-        date: "2026.08"
-      }
-    ];
-
-    // LocalStorage 연동 상태 관리
-    let portfolioData = [];
-    try {
-      const saved = localStorage.getItem(STORAGE_KEY);
-      portfolioData = saved ? JSON.parse(saved) : defaultData;
-    } catch (e) {
-      portfolioData = defaultData;
+    function openDB() {
+      return new Promise((resolve, reject) => {
+        const request = indexedDB.open(DB_NAME, DB_VERSION);
+        request.onupgradeneeded = (e) => {
+          const database = e.target.result;
+          if (!database.objectStoreNames.contains(STORE_NAME)) {
+            database.createObjectStore(STORE_NAME, { keyPath: 'id' });
+          }
+        };
+        request.onsuccess = (e) => {
+          db = e.target.result;
+          resolve(db);
+        };
+        request.onerror = (e) => reject(e.target.error);
+      });
     }
 
+    function getAllItemsFromDB() {
+      return new Promise((resolve) => {
+        const tx = db.transaction(STORE_NAME, 'readonly');
+        const store = tx.objectStore(STORE_NAME);
+        const req = store.getAll();
+        req.onsuccess = () => resolve(req.result || []);
+        req.onerror = () => resolve([]);
+      });
+    }
+
+    function saveItemToDB(item) {
+      return new Promise((resolve, reject) => {
+        const tx = db.transaction(STORE_NAME, 'readwrite');
+        const store = tx.objectStore(STORE_NAME);
+        const req = store.put(item);
+        req.onsuccess = () => resolve();
+        req.onerror = (e) => reject(e.target.error);
+      });
+    }
+
+    function deleteItemFromDB(id) {
+      return new Promise((resolve, reject) => {
+        const tx = db.transaction(STORE_NAME, 'readwrite');
+        const store = tx.objectStore(STORE_NAME);
+        const req = store.delete(id);
+        req.onsuccess = () => resolve();
+        req.onerror = (e) => reject(e.target.error);
+      });
+    }
+
+    // 2. 상태 변수
+    let portfolioData = [];
     let uploadedHtmlContent = "";
     let uploadedFileName = "";
     let activeBlobUrl = null;
 
-    function saveToStorage() {
-      try {
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(portfolioData));
-      } catch (e) {
-        alert("브라우저 저장 용량을 초과하여 임시 상태로만 유지됩니다.");
+    // 3. 파일 입력 트리거 & 초기화 (재선택 오류 방지)
+    function triggerFileInput() {
+      const input = document.getElementById('htmlFileInput');
+      input.value = ""; // 동일한 파일을 다시 선택해도 change 이벤트가 발생하도록 리셋
+      input.click();
+    }
+
+    // 드래그 앤 드롭 리스너 초기화
+    function initDropZone() {
+      const dropZone = document.getElementById('dropZone');
+      ['dragenter', 'dragover'].forEach(eventName => {
+        dropZone.addEventListener(eventName, (e) => {
+          e.preventDefault();
+          dropZone.classList.add('dragover');
+        });
+      });
+      ['dragleave', 'drop'].forEach(eventName => {
+        dropZone.addEventListener(eventName, (e) => {
+          e.preventDefault();
+          dropZone.classList.remove('dragover');
+        });
+      });
+      dropZone.addEventListener('drop', (e) => {
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+          processFile(files[0]);
+        }
+      });
+    }
+
+    function handleFileSelect(event) {
+      const file = event.target.files[0];
+      if (file) {
+        processFile(file);
       }
+    }
+
+    function processFile(file) {
+      if (!file.name.match(/\.(html|htm)$/i)) {
+        alert("HTML 파일(.html, .htm)만 첨부할 수 있습니다.");
+        return;
+      }
+      uploadedFileName = file.name;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        uploadedHtmlContent = e.target.result;
+        document.getElementById('fileStatusText').innerText = `✓ 첨부 완료: ${uploadedFileName} (${(file.size / 1024).toFixed(1)} KB)`;
+      };
+      reader.onerror = function() {
+        alert("파일을 읽는 중 오류가 발생했습니다.");
+      };
+      reader.readAsText(file, "UTF-8");
     }
 
     function changeFont(fontFamily) {
@@ -568,23 +622,14 @@
       }
     }
 
-    // HTML 파일 비동기 읽기 처리
-    function handleFileSelect(event) {
-      const file = event.target.files[0];
-      if (!file) return;
-
-      uploadedFileName = file.name;
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        uploadedHtmlContent = e.target.result;
-        document.getElementById('fileStatusText').innerText = `선택된 파일: ${uploadedFileName} (${(file.size / 1024).toFixed(1)} KB 로드 완료)`;
-      };
-      reader.readAsText(file);
-    }
-
     function renderGrid() {
       const grid = document.getElementById('portfolioGrid');
       grid.innerHTML = '';
+
+      if (portfolioData.length === 0) {
+        grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #94a3b8; padding: 40px 0;">등록된 작품이 없습니다. 상단의 [+ 새 작품 등록] 버튼을 눌러보세요.</p>';
+        return;
+      }
 
       portfolioData.forEach(item => {
         const card = document.createElement('div');
@@ -592,11 +637,11 @@
 
         const isFile = item.type === 'file';
         const typeBadge = isFile
-          ? `<span class="badge badge-file">HTML 앱 첨부</span>`
+          ? `<span class="badge badge-file">HTML 파일 앱</span>`
           : `<span class="badge badge-link">웹 링크</span>`;
 
         const fileInfo = isFile && item.fileName
-          ? `<div class="card-file-info">📄 첨부 파일: ${escapeHtml(item.fileName)}</div>`
+          ? `<div class="card-file-info">📄 첨부 파일: <strong>${escapeHtml(item.fileName)}</strong></div>`
           : '';
 
         let actionBtn = '';
@@ -678,7 +723,7 @@
       document.getElementById('itemModal').classList.remove('active');
     }
 
-    function handleSaveItem() {
+    async function handleSaveItem() {
       const editId = document.getElementById('editItemId').value;
       const category = document.getElementById('itemCategory').value;
       const title = document.getElementById('itemTitle').value.trim();
@@ -692,7 +737,7 @@
       }
 
       if (type === 'file' && !uploadedHtmlContent) {
-        alert("실행할 HTML 파일을 첨부해 주세요.");
+        alert("실행할 HTML 파일을 선택하여 첨부해 주세요.");
         return;
       }
 
@@ -701,51 +746,39 @@
         return;
       }
 
-      if (editId) {
-        const index = portfolioData.findIndex(d => d.id === Number(editId));
-        if (index !== -1) {
-          portfolioData[index].category = category;
-          portfolioData[index].title = title;
-          portfolioData[index].type = type;
-          portfolioData[index].link = type === 'link' ? link : '';
-          portfolioData[index].fileName = type === 'file' ? uploadedFileName : '';
-          portfolioData[index].htmlContent = type === 'file' ? uploadedHtmlContent : '';
-          portfolioData[index].desc = desc;
-        }
-      } else {
-        const now = new Date();
-        const dateStr = `${now.getFullYear()}.${String(now.getMonth() + 1).padStart(2, '0')}`;
-        portfolioData.unshift({
-          id: Date.now(),
-          category,
-          title,
-          type,
-          link: type === 'link' ? link : '',
-          fileName: type === 'file' ? uploadedFileName : '',
-          htmlContent: type === 'file' ? uploadedHtmlContent : '',
-          desc,
-          date: dateStr
-        });
-      }
+      const item = {
+        id: editId ? Number(editId) : Date.now(),
+        category,
+        title,
+        type,
+        link: type === 'link' ? link : '',
+        fileName: type === 'file' ? uploadedFileName : '',
+        htmlContent: type === 'file' ? uploadedHtmlContent : '',
+        desc,
+        date: editId ? (portfolioData.find(d => d.id === Number(editId))?.date || "2026.09") : getTodayString()
+      };
 
-      saveToStorage();
+      await saveItemToDB(item);
+      portfolioData = await getAllItemsFromDB();
+      portfolioData.sort((a, b) => b.id - a.id);
+
       renderGrid();
       closeModal();
     }
 
-    function deleteItem(id) {
-      if (confirm("이 작품을 목록에서 삭제하시겠습니까?")) {
-        portfolioData = portfolioData.filter(d => d.id !== id);
-        saveToStorage();
+    async function deleteItem(id) {
+      if (confirm("이 작품을 목록에서 영구히 삭제하시겠습니까?")) {
+        await deleteItemFromDB(id);
+        portfolioData = await getAllItemsFromDB();
+        portfolioData.sort((a, b) => b.id - a.id);
         renderGrid();
       }
     }
 
-    // 라이브 샌드박스 실행 엔진
     function runApp(id) {
       const target = portfolioData.find(d => d.id === id);
       if (!target || !target.htmlContent) {
-        alert("실행할 수 있는 HTML 소스코드가 존재하지 않습니다.");
+        alert("첨부된 HTML 소스코드가 존재하지 않습니다.");
         return;
       }
 
@@ -760,9 +793,7 @@
       const iframe = document.getElementById('runnerIframe');
       iframe.src = activeBlobUrl;
 
-      // 새 창 열기 버튼 이벤트 바인딩
-      const newTabBtn = document.getElementById('runnerNewTabBtn');
-      newTabBtn.onclick = function() {
+      document.getElementById('runnerNewTabBtn').onclick = function() {
         window.open(activeBlobUrl, '_blank');
       };
 
@@ -779,6 +810,11 @@
       document.getElementById('runnerModal').classList.remove('active');
     }
 
+    function getTodayString() {
+      const now = new Date();
+      return `${now.getFullYear()}.${String(now.getMonth() + 1).padStart(2, '0')}`;
+    }
+
     function escapeHtml(str) {
       return (str || '').replace(/[&<>'"]/g, tag => ({
         '&': '&amp;',
@@ -789,8 +825,31 @@
       }[tag] || tag));
     }
 
-    // 초기 화면 렌더링
-    renderGrid();
+    // 초기화 실행
+    window.addEventListener('DOMContentLoaded', async () => {
+      initDropZone();
+      await openDB();
+      portfolioData = await getAllItemsFromDB();
+
+      // 최초 실행 시 기본 예시 등록
+      if (portfolioData.length === 0) {
+        const defaultItem = {
+          id: 1,
+          category: "수업 혁신",
+          title: "과정중심 평가 기록 루브릭 샘플",
+          type: "file",
+          fileName: "rubric_sample.html",
+          htmlContent: `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>루브릭</title><style>body{font-family:sans-serif;padding:40px;text-align:center;background:#f0fdf4;color:#166534;}h2{margin-bottom:12px;}.box{background:white;padding:24px;border-radius:16px;display:inline-block;box-shadow:0 10px 15px rgba(0,0,0,0.05);}</style></head><body><div class="box"><h2>과정중심 평가 루브릭 뷰어</h2><p>첨부된 단일 HTML 파일이 IndexedDB 런타임에서 안전하게 실행되었습니다.</p></div></body></html>`,
+          desc: "학생들의 성취기준 도달 과정을 관찰하고 즉각 피드백을 기록하는 시스템 샘플입니다.",
+          date: "2026.09"
+        };
+        await saveItemToDB(defaultItem);
+        portfolioData = [defaultItem];
+      }
+
+      portfolioData.sort((a, b) => b.id - a.id);
+      renderGrid();
+    });
   </script>
 </body>
 </html>
