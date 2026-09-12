@@ -3,25 +3,27 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>바이브 코딩 프로젝트 포트폴리오</title>
-  <!-- 한글 최적화 웹폰트 -->
+  <title>소낙비의 바이브 코딩 포트폴리오</title>
+  <!-- 한글 웹폰트 -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Noto+Sans+KR:wght@400;500;700;800&display=swap" rel="stylesheet" />
 
   <style>
     :root {
-      --bg-body: #edf2f7;
-      --clay-card: #f8fafc;
-      --primary-color: #4338ca;
-      --primary-clay: #6366f1;
+      --bg-body: #e8ecf4;
+      --clay-bg: #f3f6fc;
+      --clay-card-border: rgba(255, 255, 255, 0.85);
+      
+      /* Claymorphism Shadows */
+      --clay-shadow-card: 14px 14px 28px #c5cbd7, -12px -12px 28px #ffffff;
+      --clay-shadow-btn: 6px 6px 14px #c2c9d6, -6px -6px 14px #ffffff;
+      --clay-shadow-inset: inset 4px 4px 8px #d0d6e2, inset -4px -4px 8px #ffffff;
+      --clay-shadow-badge: inset 2px 2px 5px rgba(0,0,0,0.06), inset -2px -2px 5px #ffffff;
+      
       --text-main: #1e293b;
       --text-sub: #64748b;
+      --primary-color: #4f46e5;
       --current-font: 'Pretendard', sans-serif;
-
-      --clay-shadow-card: 10px 10px 22px #cbd5e1, -10px -10px 22px #ffffff;
-      --clay-shadow-btn: 5px 5px 10px #cbd5e1, -5px -5px 10px #ffffff;
-      --clay-shadow-pressed: inset 3px 3px 6px #cbd5e1, inset -3px -3px 6px #ffffff;
-      --clay-shadow-input: inset 3px 3px 6px #dce3ec, inset -3px -3px 6px #ffffff;
     }
 
     * {
@@ -36,44 +38,46 @@
       background-color: var(--bg-body);
       color: var(--text-main);
       line-height: 1.6;
-      padding: 30px 20px;
+      padding: 36px 20px;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
     }
 
     .container {
-      max-width: 1060px;
+      max-width: 1080px;
       margin: 0 auto;
       flex: 1;
       width: 100%;
     }
 
+    /* 클레이 헤더 */
     header {
-      background: var(--clay-card);
-      padding: 24px 32px;
-      border-radius: 24px;
+      background: var(--clay-bg);
+      padding: 26px 34px;
+      border-radius: 28px;
       box-shadow: var(--clay-shadow-card);
+      border: 2px solid var(--clay-card-border);
       display: flex;
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
       gap: 16px;
-      margin-bottom: 32px;
-      border: 1px solid rgba(255, 255, 255, 0.8);
+      margin-bottom: 34px;
     }
 
     .header-title h1 {
-      font-size: 1.65rem;
+      font-size: 1.7rem;
       font-weight: 800;
       color: #0f172a;
       letter-spacing: -0.5px;
     }
 
     .header-title p {
-      font-size: 0.92rem;
+      font-size: 0.93rem;
       color: var(--text-sub);
-      margin-top: 2px;
+      margin-top: 3px;
+      font-weight: 500;
     }
 
     .controls {
@@ -82,25 +86,28 @@
       gap: 12px;
     }
 
+    /* 클레이 폼 컨트롤 */
     select, input[type="text"], input[type="url"], textarea {
-      padding: 10px 16px;
-      border-radius: 16px;
-      border: 1px solid rgba(255, 255, 255, 0.7);
+      padding: 11px 16px;
+      border-radius: 18px;
+      border: 1.5px solid rgba(255, 255, 255, 0.9);
       outline: none;
-      background: #f1f5f9;
+      background: #eef2f8;
       color: var(--text-main);
-      box-shadow: var(--clay-shadow-input);
-      font-size: 0.9rem;
+      box-shadow: var(--clay-shadow-inset);
+      font-size: 0.92rem;
     }
 
     select:focus, input:focus, textarea:focus {
-      border-color: var(--primary-clay);
+      border-color: #818cf8;
+      background: #f8fafc;
     }
 
+    /* 클레이 버튼 */
     .btn {
-      padding: 10px 18px;
-      border-radius: 16px;
-      border: none;
+      padding: 10px 20px;
+      border-radius: 20px;
+      border: 1.5px solid rgba(255, 255, 255, 0.7);
       font-weight: 700;
       font-size: 0.9rem;
       cursor: pointer;
@@ -113,90 +120,110 @@
     }
 
     .btn:active {
-      box-shadow: var(--clay-shadow-pressed);
+      box-shadow: var(--clay-shadow-inset);
       transform: translateY(2px);
     }
 
     .btn-primary {
-      background: linear-gradient(135deg, #6366f1, #4338ca);
+      background: linear-gradient(135deg, #6366f1, #4f46e5);
       color: #ffffff;
-      box-shadow: 5px 5px 12px #c7d2fe, -4px -4px 10px #ffffff;
+      border-color: rgba(255, 255, 255, 0.4);
+      box-shadow: 6px 6px 16px #b8c0d9, -6px -6px 16px #ffffff;
     }
 
     .btn-secondary {
-      background: #f1f5f9;
+      background: #e9eff7;
       color: var(--text-main);
     }
 
     .btn-success {
       background: linear-gradient(135deg, #10b981, #059669);
       color: #ffffff;
-      box-shadow: 5px 5px 12px #a7f3d0, -4px -4px 10px #ffffff;
+      box-shadow: 6px 6px 16px #b4dfcb, -6px -6px 16px #ffffff;
     }
 
     .btn-sm {
-      padding: 6px 12px;
-      font-size: 0.8rem;
-      border-radius: 12px;
+      padding: 7px 14px;
+      font-size: 0.82rem;
+      border-radius: 14px;
     }
 
+    /* 카드 그리드 */
     .grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-      gap: 24px;
+      gap: 26px;
     }
 
+    /* 클레이 카드 */
     .card {
-      background: var(--clay-card);
-      border-radius: 24px;
-      padding: 24px;
+      background: var(--clay-bg);
+      border-radius: 28px;
+      padding: 26px;
       box-shadow: var(--clay-shadow-card);
+      border: 2px solid var(--clay-card-border);
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      border: 1px solid rgba(255, 255, 255, 0.8);
     }
 
     .card:hover {
-      transform: translateY(-4px);
+      transform: translateY(-5px);
     }
 
     .card-top {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 12px;
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+      gap: 8px;
     }
 
     .badge-wrap {
       display: flex;
       gap: 6px;
+      flex-wrap: wrap;
     }
 
+    /* 클레이 뱃지 */
     .badge {
-      background: #e0e7ff;
-      color: var(--primary-color);
-      padding: 5px 10px;
-      border-radius: 10px;
-      font-size: 0.75rem;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 0.76rem;
       font-weight: 700;
-      box-shadow: inset 2px 2px 4px #c7d2fe, inset -2px -2px 4px #ffffff;
+      box-shadow: var(--clay-shadow-badge);
+      border: 1px solid rgba(255, 255, 255, 0.6);
+    }
+
+    .badge-cat {
+      background: #e0e7ff;
+      color: #4338ca;
     }
 
     .badge-file {
-      background: #dcfce7;
-      color: #15803d;
-      box-shadow: inset 2px 2px 4px #bbf7d0, inset -2px -2px 4px #ffffff;
+      background: #dbeafe;
+      color: #1d4ed8;
     }
 
     .badge-link {
-      background: #e0f2fe;
-      color: #0369a1;
-      box-shadow: inset 2px 2px 4px #bae6fd, inset -2px -2px 4px #ffffff;
+      background: #e0e7ff;
+      color: #3730a3;
+    }
+
+    /* 개인/공용 구분 뱃지 */
+    .badge-scope-public {
+      background: #dcfce7;
+      color: #15803d;
+    }
+
+    .badge-scope-private {
+      background: #fef3c7;
+      color: #b45309;
     }
 
     .card-title {
-      font-size: 1.18rem;
+      font-size: 1.2rem;
       font-weight: 700;
       color: #0f172a;
       margin-bottom: 8px;
@@ -213,25 +240,26 @@
     .card-file-info {
       font-size: 0.8rem;
       color: #475569;
-      background: #f1f5f9;
+      background: #e6ebf5;
       padding: 8px 12px;
-      border-radius: 12px;
+      border-radius: 14px;
       margin-bottom: 14px;
       word-break: break-all;
+      box-shadow: var(--clay-shadow-inset);
     }
 
     .card-bottom {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-top: 1px solid #e2e8f0;
-      padding-top: 12px;
+      border-top: 1.5px solid #dbe2ee;
+      padding-top: 14px;
     }
 
     .card-date {
       font-size: 0.8rem;
       color: #94a3b8;
-      font-weight: 500;
+      font-weight: 600;
     }
 
     .card-actions {
@@ -240,7 +268,7 @@
       align-items: center;
     }
 
-    /* 모달 */
+    /* 클레이 모달 */
     .modal-backdrop {
       display: none;
       position: fixed;
@@ -257,20 +285,20 @@
     }
 
     .modal {
-      background: var(--clay-card);
-      padding: 28px;
-      border-radius: 26px;
+      background: #f3f6fc;
+      padding: 30px;
+      border-radius: 30px;
       width: 92%;
-      max-width: 520px;
-      box-shadow: 20px 20px 40px rgba(0, 0, 0, 0.15), -10px -10px 30px #ffffff;
-      border: 1px solid rgba(255, 255, 255, 0.9);
+      max-width: 530px;
+      box-shadow: 20px 20px 40px rgba(0, 0, 0, 0.18), -12px -12px 30px #ffffff;
+      border: 2px solid rgba(255, 255, 255, 0.9);
       max-height: 90vh;
       overflow-y: auto;
     }
 
     .modal h2 {
-      font-size: 1.3rem;
-      margin-bottom: 16px;
+      font-size: 1.35rem;
+      margin-bottom: 18px;
       color: #0f172a;
     }
 
@@ -280,20 +308,26 @@
 
     .form-group label {
       display: block;
-      font-size: 0.85rem;
+      font-size: 0.86rem;
       font-weight: 700;
       margin-bottom: 6px;
       color: #475569;
     }
 
-    .form-group input, .form-group textarea, .form-group select {
+    .form-group input[type="text"], 
+    .form-group input[type="url"], 
+    .form-group textarea, 
+    .form-group select {
       width: 100%;
     }
 
     .radio-group {
       display: flex;
-      gap: 14px;
-      margin-bottom: 10px;
+      gap: 16px;
+      background: #eef2f8;
+      padding: 8px 14px;
+      border-radius: 16px;
+      box-shadow: var(--clay-shadow-inset);
     }
 
     .radio-label {
@@ -303,29 +337,30 @@
       font-size: 0.88rem;
       font-weight: 600;
       cursor: pointer;
+      color: #334155;
     }
 
-    /* 드래그 앤 드롭 파일 업로드 영역 */
     .file-upload-box {
       border: 2px dashed #94a3b8;
-      border-radius: 16px;
+      border-radius: 20px;
       padding: 22px 16px;
       text-align: center;
-      background: #f8fafc;
+      background: #eef2f8;
       cursor: pointer;
-      transition: background-color 0.2s ease, border-color 0.2s ease;
+      box-shadow: var(--clay-shadow-inset);
+      transition: all 0.2s ease;
     }
 
     .file-upload-box.dragover {
-      background: #eef2ff;
-      border-color: var(--primary-clay);
+      background: #e0e7ff;
+      border-color: var(--primary-color);
     }
 
     .file-status {
       margin-top: 8px;
       font-size: 0.83rem;
       color: #059669;
-      font-weight: 600;
+      font-weight: 700;
     }
 
     .modal-actions {
@@ -335,7 +370,7 @@
       margin-top: 24px;
     }
 
-    /* 인라인 러너 모달 */
+    /* 실행창 */
     .runner-modal {
       display: none;
       position: fixed;
@@ -344,7 +379,7 @@
       backdrop-filter: blur(6px);
       z-index: 200;
       flex-direction: column;
-      padding: 20px;
+      padding: 24px;
     }
 
     .runner-modal.active {
@@ -353,20 +388,21 @@
 
     .runner-container {
       background: #ffffff;
-      border-radius: 20px;
+      border-radius: 24px;
       flex: 1;
       display: flex;
       flex-direction: column;
       overflow: hidden;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
     }
 
     .runner-header {
       background: #f8fafc;
-      padding: 12px 20px;
+      padding: 14px 22px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-bottom: 1px solid #e2e8f0;
+      border-bottom: 1.5px solid #e2e8f0;
     }
 
     .runner-iframe {
@@ -376,16 +412,18 @@
       background: #ffffff;
     }
 
+    /* 푸터 및 저작권 */
     footer {
-      margin-top: 48px;
+      margin-top: 50px;
       text-align: center;
-      padding: 20px;
-      border-radius: 20px;
-      background: var(--clay-card);
+      padding: 22px;
+      border-radius: 24px;
+      background: var(--clay-bg);
       box-shadow: var(--clay-shadow-card);
+      border: 2px solid var(--clay-card-border);
       color: #64748b;
-      font-size: 0.85rem;
-      border: 1px solid rgba(255, 255, 255, 0.8);
+      font-size: 0.88rem;
+      font-weight: 600;
     }
   </style>
 </head>
@@ -394,16 +432,16 @@
   <div class="container">
     <header>
       <div class="header-title">
-        <h1>교육 및 실천 포트폴리오</h1>
-        <p>HTML 앱 직접 첨부 및 라이브 시연 아카이브</p>
+        <h1>소낙비의 바이브 코딩 포트폴리오</h1>
+        <p>인터랙티브 웹 앱 & 교육 자동화 도구 아카이브</p>
       </div>
 
       <div class="controls">
-        <label for="fontSelect" style="font-size: 0.85rem; font-weight: 700;">글꼴</label>
+        <label for="fontSelect" style="font-size: 0.86rem; font-weight: 700;">글꼴</label>
         <select id="fontSelect" onchange="changeFont(this.value)">
-          <option value="'Pretendard', sans-serif">프리텐다드 (선명함)</option>
+          <option value="'Pretendard', sans-serif">프리텐다드 (기본)</option>
           <option value="'Noto Sans KR', sans-serif">본고딕 (단정함)</option>
-          <option value="'Gowun Dodum', sans-serif">고운돋움 (따뜻함)</option>
+          <option value="'Gowun Dodum', sans-serif">고운돋움 (부드러움)</option>
         </select>
         <button class="btn btn-primary" onclick="openCreateModal()">+ 새 작품 등록</button>
       </div>
@@ -422,19 +460,35 @@
       <h2 id="modalHeading">새 작품 등록</h2>
       <input type="hidden" id="editItemId" />
 
+      <!-- 구분 (개인 / 공용) -->
+      <div class="form-group">
+        <label>공개 범위</label>
+        <div class="radio-group">
+          <label class="radio-label">
+            <input type="radio" name="itemScope" value="공용" checked />
+            🌐 공용 (Public)
+          </label>
+          <label class="radio-label">
+            <input type="radio" name="itemScope" value="개인" />
+            🔒 개인 (Private)
+          </label>
+        </div>
+      </div>
+
+      <!-- 분류 (기타 반영) -->
       <div class="form-group">
         <label for="itemCategory">분류</label>
         <select id="itemCategory">
           <option value="수업 혁신">수업 혁신</option>
           <option value="학급 경영">학급 경영</option>
           <option value="업무 자동화">업무 자동화</option>
-          <option value="연구 및 기획">연구 및 기획</option>
+          <option value="기타">기타</option>
         </select>
       </div>
 
       <div class="form-group">
         <label for="itemTitle">작품 제목</label>
-        <input type="text" id="itemTitle" placeholder="예: 학급 운영 지원 도구 v4" />
+        <input type="text" id="itemTitle" placeholder="예: 학급일지 v4 대시보드" />
       </div>
 
       <div class="form-group">
@@ -446,30 +500,30 @@
           </label>
           <label class="radio-label">
             <input type="radio" name="uploadType" value="link" onchange="toggleUploadType()" />
-            웹 사이트 링크 연결
+            웹 링크 연결
           </label>
         </div>
       </div>
 
-      <!-- 개선된 파일 첨부 섹션 -->
+      <!-- 파일 첨부 -->
       <div class="form-group" id="fileSection">
         <label>HTML 파일 선택 (.html, .htm)</label>
         <div class="file-upload-box" id="dropZone" onclick="triggerFileInput()">
-          <p style="font-size: 0.9rem; color: #1e293b; font-weight: 600;">📁 클릭하거나 파일을 여기로 끌어다 놓으세요</p>
-          <p style="font-size: 0.78rem; color: #64748b; margin-top: 4px;">단일 HTML 파일 내 자바스크립트/CSS 포함 앱 지원</p>
+          <p style="font-size: 0.92rem; color: #1e293b; font-weight: 700;">📁 클릭하거나 파일을 드래그하세요</p>
+          <p style="font-size: 0.8rem; color: #64748b; margin-top: 4px;">단일 HTML 파일 내 자바스크립트/스타일 포함 앱 지원</p>
           <input type="file" id="htmlFileInput" accept=".html, .htm" style="display: none;" onchange="handleFileSelect(event)" />
         </div>
         <div class="file-status" id="fileStatusText"></div>
       </div>
 
       <div class="form-group" id="linkSection" style="display: none;">
-        <label for="itemLink">라이브 실행 링크 (URL)</label>
+        <label for="itemLink">웹 사이트 링크 (URL)</label>
         <input type="url" id="itemLink" placeholder="https://..." />
       </div>
 
       <div class="form-group">
         <label for="itemDesc">프로젝트 상세 설명</label>
-        <textarea id="itemDesc" rows="4" placeholder="프로젝트의 개발 취지와 핵심 기능을 기록해 주세요."></textarea>
+        <textarea id="itemDesc" rows="4" placeholder="프로젝트의 목적과 주요 기능을 입력해 주세요."></textarea>
       </div>
 
       <div class="modal-actions">
@@ -494,8 +548,8 @@
   </div>
 
   <script>
-    // 1. IndexedDB 설정 (대용량 HTML 완벽 지원)
-    const DB_NAME = 'EduPortfolioDB';
+    // 1. IndexedDB 설정
+    const DB_NAME = 'SonakbiPortfolioDB';
     const DB_VERSION = 1;
     const STORE_NAME = 'portfolio_items';
     let db = null;
@@ -547,20 +601,18 @@
       });
     }
 
-    // 2. 상태 변수
+    // 2. 상태 관리 변수
     let portfolioData = [];
     let uploadedHtmlContent = "";
     let uploadedFileName = "";
     let activeBlobUrl = null;
 
-    // 3. 파일 입력 트리거 & 초기화 (재선택 오류 방지)
     function triggerFileInput() {
       const input = document.getElementById('htmlFileInput');
-      input.value = ""; // 동일한 파일을 다시 선택해도 change 이벤트가 발생하도록 리셋
+      input.value = "";
       input.click();
     }
 
-    // 드래그 앤 드롭 리스너 초기화
     function initDropZone() {
       const dropZone = document.getElementById('dropZone');
       ['dragenter', 'dragover'].forEach(eventName => {
@@ -592,7 +644,7 @@
 
     function processFile(file) {
       if (!file.name.match(/\.(html|htm)$/i)) {
-        alert("HTML 파일(.html, .htm)만 첨부할 수 있습니다.");
+        alert("HTML 파일(.html, .htm)만 업로드할 수 있습니다.");
         return;
       }
       uploadedFileName = file.name;
@@ -637,16 +689,22 @@
 
         const isFile = item.type === 'file';
         const typeBadge = isFile
-          ? `<span class="badge badge-file">HTML 파일 앱</span>`
+          ? `<span class="badge badge-file">HTML 파일</span>`
           : `<span class="badge badge-link">웹 링크</span>`;
 
+        // 개인 / 공용 뱃지
+        const scope = item.scope || '공용';
+        const scopeBadge = scope === '공용'
+          ? `<span class="badge badge-scope-public">🌐 공용</span>`
+          : `<span class="badge badge-scope-private">🔒 개인</span>`;
+
         const fileInfo = isFile && item.fileName
-          ? `<div class="card-file-info">📄 첨부 파일: <strong>${escapeHtml(item.fileName)}</strong></div>`
+          ? `<div class="card-file-info">📄 첨부: <strong>${escapeHtml(item.fileName)}</strong></div>`
           : '';
 
         let actionBtn = '';
         if (isFile) {
-          actionBtn = `<button class="btn btn-success btn-sm" onclick="runApp(${item.id})">앱 실행하기</button>`;
+          actionBtn = `<button class="btn btn-success btn-sm" onclick="runApp(${item.id})">앱 실행</button>`;
         } else if (item.link && item.link !== '#') {
           actionBtn = `<a href="${escapeHtml(item.link)}" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm">웹 방문</a>`;
         }
@@ -655,7 +713,8 @@
           <div>
             <div class="card-top">
               <div class="badge-wrap">
-                <span class="badge">${item.category}</span>
+                ${scopeBadge}
+                <span class="badge badge-cat">${escapeHtml(item.category)}</span>
                 ${typeBadge}
               </div>
             </div>
@@ -679,6 +738,7 @@
     function openCreateModal() {
       document.getElementById('modalHeading').innerText = "새 작품 등록";
       document.getElementById('editItemId').value = "";
+      document.querySelector('input[name="itemScope"][value="공용"]').checked = true;
       document.getElementById('itemCategory').value = "수업 혁신";
       document.getElementById('itemTitle').value = "";
       document.getElementById('itemLink').value = "";
@@ -698,6 +758,11 @@
 
       document.getElementById('modalHeading').innerText = "작품 정보 수정";
       document.getElementById('editItemId').value = target.id;
+      
+      const scopeVal = target.scope || '공용';
+      const scopeRadio = document.querySelector(`input[name="itemScope"][value="${scopeVal}"]`);
+      if (scopeRadio) scopeRadio.checked = true;
+
       document.getElementById('itemCategory').value = target.category;
       document.getElementById('itemTitle').value = target.title;
       document.getElementById('itemLink').value = target.link || "";
@@ -725,6 +790,7 @@
 
     async function handleSaveItem() {
       const editId = document.getElementById('editItemId').value;
+      const scope = document.querySelector('input[name="itemScope"]:checked').value;
       const category = document.getElementById('itemCategory').value;
       const title = document.getElementById('itemTitle').value.trim();
       const type = document.querySelector('input[name="uploadType"]:checked').value;
@@ -737,17 +803,18 @@
       }
 
       if (type === 'file' && !uploadedHtmlContent) {
-        alert("실행할 HTML 파일을 선택하여 첨부해 주세요.");
+        alert("실행할 HTML 파일을 선택해 주세요.");
         return;
       }
 
       if (type === 'link' && !link) {
-        alert("웹 사이트 링크 주소를 입력해 주세요.");
+        alert("웹 링크 주소를 입력해 주세요.");
         return;
       }
 
       const item = {
         id: editId ? Number(editId) : Date.now(),
+        scope,
         category,
         title,
         type,
@@ -767,7 +834,7 @@
     }
 
     async function deleteItem(id) {
-      if (confirm("이 작품을 목록에서 영구히 삭제하시겠습니까?")) {
+      if (confirm("이 작품을 삭제하시겠습니까?")) {
         await deleteItemFromDB(id);
         portfolioData = await getAllItemsFromDB();
         portfolioData.sort((a, b) => b.id - a.id);
@@ -778,7 +845,7 @@
     function runApp(id) {
       const target = portfolioData.find(d => d.id === id);
       if (!target || !target.htmlContent) {
-        alert("첨부된 HTML 소스코드가 존재하지 않습니다.");
+        alert("첨부된 소스코드가 없습니다.");
         return;
       }
 
@@ -825,21 +892,20 @@
       }[tag] || tag));
     }
 
-    // 초기화 실행
     window.addEventListener('DOMContentLoaded', async () => {
       initDropZone();
       await openDB();
       portfolioData = await getAllItemsFromDB();
 
-      // 최초 실행 시 기본 예시 등록
       if (portfolioData.length === 0) {
         const defaultItem = {
           id: 1,
+          scope: "공용",
           category: "수업 혁신",
-          title: "과정중심 평가 기록 루브릭 샘플",
+          title: "과정중심 평가 기록 루브릭",
           type: "file",
           fileName: "rubric_sample.html",
-          htmlContent: `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>루브릭</title><style>body{font-family:sans-serif;padding:40px;text-align:center;background:#f0fdf4;color:#166534;}h2{margin-bottom:12px;}.box{background:white;padding:24px;border-radius:16px;display:inline-block;box-shadow:0 10px 15px rgba(0,0,0,0.05);}</style></head><body><div class="box"><h2>과정중심 평가 루브릭 뷰어</h2><p>첨부된 단일 HTML 파일이 IndexedDB 런타임에서 안전하게 실행되었습니다.</p></div></body></html>`,
+          htmlContent: `<!DOCTYPE html><html><head><meta charset="UTF-8"><title>루브릭</title><style>body{font-family:sans-serif;padding:40px;text-align:center;background:#eef2f8;color:#1e293b;}.box{background:#f8fafc;padding:26px;border-radius:22px;display:inline-block;box-shadow:8px 8px 16px #cbd5e1, -8px -8px 16px #ffffff;}</style></head><body><div class="box"><h2>클레이 스타일 과정중심 평가 루브릭</h2><p style="margin-top:10px; color:#64748b;">IndexedDB 런타임에서 안전하게 실행되는 단일 HTML 앱입니다.</p></div></body></html>`,
           desc: "학생들의 성취기준 도달 과정을 관찰하고 즉각 피드백을 기록하는 시스템 샘플입니다.",
           date: "2026.09"
         };
