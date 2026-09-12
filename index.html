@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>교육 및 연구 포트폴리오</title>
+  <!-- 가독성 좋은 한글 웹폰트 3종 -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet" />
+
+  <style>
+    :root {
+      --bg-body: #eef2f6;
+      --clay-card: #f8fafc;
+      --primary-color: #4f46e5;
+      --primary-clay: #6366f1;
+      --text-main: #2d3748;
+      --text-sub: #718096;
+      --current-font: 'Pretendard', sans-serif;
+
+      /* 클레이 스타일 전용 부드러운 양각/음각 그림자 토큰 */
+      --clay-shadow-out: 8px 8px 16px #d1d9e6, -8px -8px 16px #ffffff;
+      --clay-shadow-card: 10px 10px 20px #cbd5e1, -10px -10px 20px #ffffff;
+      --clay-shadow-btn: 5px 5px 10px #c5cee0, -5px -5px 10px #ffffff;
+      --clay-shadow-btn-pressed: inset 3px 3px 6px #c5cee0, inset -3px -3px 6px #ffffff;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: var(--current-font);
+      transition: font-family 0.2s ease, transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    body {
+      background-color: var(--bg-body);
+      color: var(--text-main);
+      line-height: 1.6;
+      padding: 30px 20px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .container {
+      max-width: 1040px;
+      margin: 0 auto;
+      flex: 1;
+      width: 100%;
+    }
+
+    /* 상단 헤더 - 클레이 보드 스타일 */
+    header {
+      background: var(--clay-card);
+      padding: 24px 30px;
+      border-radius: 24px;
+      box-shadow: var(--clay-shadow-card);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+
+    .header-title h1 {
+      font-size: 1.7rem;
+      font-weight: 800;
+      color: #1e293b;
+      margin-bottom: 4px;
+    }
+
+    .header-title p {
+      font-size: 0.95rem;
+      color: var(--text-sub);
+    }
+
+    .controls {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    /* 클레이 인풋 & 셀렉트 박스 */
+    select, input, textarea {
+      padding: 10px 16px;
+      border-radius: 16px;
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      outline: none;
+      background: #f1f5f9;
+      color: var(--text-main);
+      box-shadow: inset 3px 3px 6px #dce3ec, inset -3px -3px 6px #ffffff;
+      font-size: 0.9rem;
+    }
+
+    select:focus, input:focus, textarea:focus {
+      border: 1px solid var(--primary-clay);
+    }
+
+    /* 클레이 버튼 */
+    .btn {
+      padding: 10px 18px;
+      border-radius: 16px;
+      border: none;
+      font-weight: 700;
+      font-size: 0.9rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      box-shadow: var(--clay-shadow-btn);
+    }
+
+    .btn:active {
+      box-shadow: var(--clay-shadow-btn-pressed);
+      transform: translateY(2px);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #6366f1, #4f46e5);
+      color: #ffffff;
+      box-shadow: 5px 5px 12px #c7d2fe, -4px -4px 10px #ffffff;
+    }
+
+    .btn-secondary {
+      background: #f1f5f9;
+      color: var(--text-main);
+    }
+
+    .btn-sm {
+      padding: 6px 12px;
+      font-size: 0.8rem;
+      border-radius: 12px;
+    }
+
+    /* 카드 그리드 */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
+      gap: 26px;
+    }
+
+    /* 클레이 카드 */
+    .card {
+      background: var(--clay-card);
+      border-radius: 24px;
+      padding: 24px;
+      box-shadow: var(--clay-shadow-card);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      border: 1px solid rgba(255, 255, 255, 0.7);
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+    }
+
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+
+    .badge {
+      background: #e0e7ff;
+      color: var(--primary-color);
+      padding: 6px 12px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      box-shadow: inset 2px 2px 4px #c7d2fe, inset -2px -2px 4px #ffffff;
+    }
+
+    .card-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: #1e293b;
+      margin-bottom: 8px;
+    }
+
+    .card-desc {
+      font-size: 0.92rem;
+      color: var(--text-sub);
+      margin-bottom: 18px;
+      white-space: pre-line;
+      flex-grow: 1;
+    }
+
+    .card-bottom {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid #e2e8f0;
+      padding-top: 14px;
+    }
+
+    .card-date {
+      font-size: 0.8rem;
+      color: #94a3b8;
+      font-weight: 500;
+    }
+
+    .card-actions {
+      display: flex;
+      gap: 6px;
+    }
+
+    /* 클레이 모달 레이어 */
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.4);
+      backdrop-filter: blur(4px);
+      justify-content: center;
+      align-items: center;
+      z-index: 100;
+    }
+
+    .modal-backdrop.active {
+      display: flex;
+    }
+
+    .modal {
+      background: var(--clay-card);
+      padding: 30px;
+      border-radius: 28px;
+      width: 90%;
+      max-width: 480px;
+      box-shadow: 20px 20px 40px rgba(0, 0, 0, 0.15), -10px -10px 30px #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.8);
+    }
+
+    .modal h2 {
+      font-size: 1.3rem;
+      margin-bottom: 18px;
+      color: #1e293b;
+    }
+
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.85rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+      color: #475569;
+    }
+
+    .form-group input, .form-group textarea, .form-group select {
+      width: 100%;
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 24px;
+    }
+
+    /* 저작권 표기 푸터 */
+    footer {
+      margin-top: 48px;
+      text-align: center;
+      padding: 20px;
+      border-radius: 20px;
+      background: var(--clay-card);
+      box-shadow: var(--clay-shadow-out);
+      color: #64748b;
+      font-size: 0.85rem;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <!-- 헤더 -->
+    <header>
+      <div class="header-title">
+        <h1>교육 및 연구 포트폴리오</h1>
+        <p>실천 중심 아카이빙 플랫폼</p>
+      </div>
+
+      <div class="controls">
+        <label for="fontSelect" style="font-size: 0.85rem; font-weight: 700;">글꼴</label>
+        <select id="fontSelect" onchange="changeFont(this.value)">
+          <option value="'Pretendard', sans-serif">프리텐다드 (선명함)</option>
+          <option value="'Noto Sans KR', sans-serif">본고딕 (단정함)</option>
+          <option value="'Gowun Dodum', sans-serif">고운돋움 (따뜻함)</option>
+        </select>
+
+        <button class="btn btn-primary" onclick="openCreateModal()">+ 새 작품 등록</button>
+      </div>
+    </header>
+
+    <!-- 포트폴리오 카드 그리드 -->
+    <div class="grid" id="portfolioGrid"></div>
+  </div>
+
+  <!-- 저작권 푸터 -->
+  <footer>
+    <p>&copy; 2026 EduPortfolio. All Rights Reserved. 본 자료 및 포트폴리오의 모든 저작권은 작성자에게 있습니다.</p>
+  </footer>
+
+  <!-- 등록 및 수정 공용 모달 다이얼로그 -->
+  <div class="modal-backdrop" id="itemModal">
+    <div class="modal">
+      <h2 id="modalHeading">새 작품 등록</h2>
+      <input type="hidden" id="editItemId" />
+
+      <div class="form-group">
+        <label for="itemCategory">분류</label>
+        <select id="itemCategory">
+          <option value="수업 혁신">수업 혁신</option>
+          <option value="학급 경영">학급 경영</option>
+          <option value="업무 자동화">업무 자동화</option>
+          <option value="연구 및 기획">연구 및 기획</option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="itemTitle">작품 / 프로젝트 제목</label>
+        <input type="text" id="itemTitle" placeholder="예: 과정중심 평가 루브릭 시스템" />
+      </div>
+
+      <div class="form-group">
+        <label for="itemDesc">상세 내용</label>
+        <textarea id="itemDesc" rows="4" placeholder="프로젝트의 목적과 특징을 자유롭게 기록해 보세요."></textarea>
+      </div>
+
+      <div class="modal-actions">
+        <button class="btn btn-secondary" onclick="closeModal()">취소</button>
+        <button class="btn btn-primary" onclick="handleSaveItem()">저장하기</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 1. 상태 관리용 기본 데이터 세트
+    let portfolioData = [
+      {
+        id: 1,
+        category: "수업 혁신",
+        title: "과정중심 평가 기록 루브릭",
+        desc: "학생들의 성취기준 도달 과정을 실시간으로 관찰하고 학생 맞춤형 피드백을 축적하는 평가 도구입니다.",
+        date: "2026.09"
+      },
+      {
+        id: 2,
+        category: "업무 자동화",
+        title: "학급 운영 지원 도구 v4",
+        desc: "출결, 좌석 배치 및 과제 확인을 한 화면에서 해결할 수 있도록 제작한 단일 파일 경량 웹 앱입니다.",
+        date: "2026.08"
+      }
+    ];
+
+    // 2. 전체 글꼴 동적 교체 함수
+    function changeFont(fontFamily) {
+      document.documentElement.style.setProperty('--current-font', fontFamily);
+    }
+
+    // 3. 카드 목록 렌더링 함수
+    function renderGrid() {
+      const grid = document.getElementById('portfolioGrid');
+      grid.innerHTML = '';
+
+      portfolioData.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+          <div>
+            <div class="card-top">
+              <span class="badge">${item.category}</span>
+            </div>
+            <h3 class="card-title">${escapeHtml(item.title)}</h3>
+            <p class="card-desc">${escapeHtml(item.desc)}</p>
+          </div>
+          <div class="card-bottom">
+            <span class="card-date">${item.date}</span>
+            <div class="card-actions">
+              <button class="btn btn-secondary btn-sm" onclick="openEditModal(${item.id})">수정</button>
+              <button class="btn btn-secondary btn-sm" onclick="deleteItem(${item.id})">삭제</button>
+            </div>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    // 4. 새 등록 모달 열기
+    function openCreateModal() {
+      document.getElementById('modalHeading').innerText = "새 작품 등록";
+      document.getElementById('editItemId').value = "";
+      document.getElementById('itemCategory').value = "수업 혁신";
+      document.getElementById('itemTitle').value = "";
+      document.getElementById('itemDesc').value = "";
+      document.getElementById('itemModal').classList.add('active');
+    }
+
+    // 5. 수정 모달 열기 (기존 값 바인딩)
+    function openEditModal(id) {
+      const target = portfolioData.find(d => d.id === id);
+      if (!target) return;
+
+      document.getElementById('modalHeading').innerText = "작품 내용 수정";
+      document.getElementById('editItemId').value = target.id;
+      document.getElementById('itemCategory').value = target.category;
+      document.getElementById('itemTitle').value = target.title;
+      document.getElementById('itemDesc').value = target.desc;
+      document.getElementById('itemModal').classList.add('active');
+    }
+
+    // 6. 모달 닫기
+    function closeModal() {
+      document.getElementById('itemModal').classList.remove('active');
+    }
+
+    // 7. 저장 처리 (등록 또는 수정 분기)
+    function handleSaveItem() {
+      const editId = document.getElementById('editItemId').value;
+      const category = document.getElementById('itemCategory').value;
+      const title = document.getElementById('itemTitle').value.trim();
+      const desc = document.getElementById('itemDesc').value.trim();
+
+      if (!title || !desc) {
+        alert("제목과 설명을 모두 입력해 주세요.");
+        return;
+      }
+
+      if (editId) {
+        // 기존 항목 수정
+        const index = portfolioData.findIndex(d => d.id === Number(editId));
+        if (index !== -1) {
+          portfolioData[index].category = category;
+          portfolioData[index].title = title;
+          portfolioData[index].desc = desc;
+        }
+      } else {
+        // 신규 항목 추가
+        const now = new Date();
+        const dateStr = `${now.getFullYear()}.${String(now.getMonth() + 1).padStart(2, '0')}`;
+        portfolioData.unshift({
+          id: Date.now(),
+          category,
+          title,
+          desc,
+          date: dateStr
+        });
+      }
+
+      renderGrid();
+      closeModal();
+    }
+
+    // 8. 항목 삭제 함수
+    function deleteItem(id) {
+      if (confirm("이 작품을 목록에서 삭제하시겠습니까?")) {
+        portfolioData = portfolioData.filter(d => d.id !== id);
+        renderGrid();
+      }
+    }
+
+    // XSS 방지용 이스케이프 유틸
+    function escapeHtml(str) {
+      return str.replace(/[&<>'"]/g, tag => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        "'": '&#39;',
+        '"': '&quot;'
+      }[tag] || tag));
+    }
+
+    // 초기 화면 렌더링
+    renderGrid();
+  </script>
+</body>
+</html>
