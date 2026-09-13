@@ -23,7 +23,6 @@
       --text-main: #1e293b;
       --text-sub: #64748b;
       --primary-color: #4f46e5;
-      /* 기본 글꼴을 '고운돋움'으로 설정 */
       --current-font: 'Gowun Dodum', sans-serif;
     }
 
@@ -89,7 +88,7 @@
     }
 
     /* 클레이 폼 컨트롤 */
-    select, input[type="text"], input[type="url"], textarea {
+    select, input[type="text"], input[type="url"], input[type="password"], textarea {
       padding: 11px 16px;
       border-radius: 18px;
       border: 1.5px solid rgba(255, 255, 255, 0.9);
@@ -213,7 +212,6 @@
       color: #3730a3;
     }
 
-    /* 개인/공용 구분 뱃지 */
     .badge-scope-public {
       background: #dcfce7;
       color: #15803d;
@@ -318,6 +316,7 @@
 
     .form-group input[type="text"], 
     .form-group input[type="url"], 
+    .form-group input[type="password"], 
     .form-group textarea, 
     .form-group select {
       width: 100%;
@@ -439,7 +438,6 @@
       </div>
 
       <div class="controls">
-        <!-- 정렬 선택 컨트롤 -->
         <label for="sortSelect" style="font-size: 0.86rem; font-weight: 700;">정렬</label>
         <select id="sortSelect" onchange="handleSortChange(this.value)">
           <option value="latest">최신 등록순</option>
@@ -447,14 +445,14 @@
           <option value="category">분류별</option>
         </select>
 
-        <!-- 글꼴 선택 컨트롤 (고운돋움 기본 선택) -->
         <label for="fontSelect" style="font-size: 0.86rem; font-weight: 700;">글꼴</label>
         <select id="fontSelect" onchange="changeFont(this.value)">
           <option value="'Gowun Dodum', sans-serif" selected>고운돋움 (기본)</option>
           <option value="'Pretendard', sans-serif">프리텐다드 (깔끔함)</option>
           <option value="'Noto Sans KR', sans-serif">본고딕 (단정함)</option>
         </select>
-        <button class="btn btn-primary" onclick="openCreateModal()">+ 새 작품 등록</button>
+        <!-- 등록 전 비밀번호 '1234' 검증 트리거 -->
+        <button class="btn btn-primary" onclick="requestCreateModal()">+ 새 작품 등록</button>
       </div>
     </header>
 
@@ -476,17 +474,23 @@
         <label>공개 범위</label>
         <div class="radio-group">
           <label class="radio-label">
-            <input type="radio" name="itemScope" value="공용" checked />
+            <input type="radio" name="itemScope" value="공용" checked onchange="toggleScopePassword()" />
             🌐 공용 (Public)
           </label>
           <label class="radio-label">
-            <input type="radio" name="itemScope" value="개인" />
+            <input type="radio" name="itemScope" value="개인" onchange="toggleScopePassword()" />
             🔒 개인 (Private)
           </label>
         </div>
       </div>
 
-      <!-- 분류 (수업 혁신, 학급 경영, 업무 자동화, 기타) -->
+      <!-- 개인 선택 시 비밀번호 입력 (보이지 않게 type="password") -->
+      <div class="form-group" id="passwordSection" style="display: none;">
+        <label for="itemPassword">개인 열람 비밀번호 설정</label>
+        <input type="password" id="itemPassword" placeholder="열람 시 입력할 비밀번호 (미입력 시 기본 1234)" />
+      </div>
+
+      <!-- 분류 -->
       <div class="form-group">
         <label for="itemCategory">분류</label>
         <select id="itemCategory">
@@ -540,6 +544,24 @@
       <div class="modal-actions">
         <button class="btn btn-secondary" onclick="closeModal()">취소</button>
         <button class="btn btn-primary" onclick="handleSaveItem()">저장하기</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 비밀번호 확인 통합 모달 (등록 인증 및 개인 자료 열람용) -->
+  <div class="modal-backdrop" id="pwdAuthModal">
+    <div class="modal" style="max-width: 400px;">
+      <h2 id="pwdAuthHeading">🔒 보안 비밀번호 확인</h2>
+      <p id="pwdAuthDesc" style="font-size: 0.88rem; color: var(--text-sub); margin-bottom: 14px;">
+        비밀번호를 입력해 주세요.
+      </p>
+      <div class="form-group">
+        <label for="inputAuthPassword">비밀번호</label>
+        <input type="password" id="inputAuthPassword" placeholder="비밀번호 입력..." onkeyup="if(event.key==='Enter') submitPasswordCheck()" />
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-secondary" onclick="closePwdAuthModal()">취소</button>
+        <button class="btn btn-primary" onclick="submitPasswordCheck()">확인</button>
       </div>
     </div>
   </div>
@@ -619,6 +641,10 @@
     let uploadedFileName = "";
     let activeBlobUrl = null;
 
+    // 인증 콜백 및 목표 암호 관리
+    let pendingAuthCallback = null;
+    let expectedAuthPassword = "1234";
+
     function triggerFileInput() {
       const input = document.getElementById('htmlFileInput');
       input.value = "";
@@ -675,6 +701,16 @@
       document.documentElement.style.setProperty('--current-font', fontFamily);
     }
 
+    function toggleScopePassword() {
+      const scope = document.querySelector('input[name="itemScope"]:checked').value;
+      const pwdSec = document.getElementById('passwordSection');
+      if (scope === '개인') {
+        pwdSec.style.display = 'block';
+      } else {
+        pwdSec.style.display = 'none';
+      }
+    }
+
     function toggleUploadType() {
       const type = document.querySelector('input[name="uploadType"]:checked').value;
       if (type === 'file') {
@@ -686,13 +722,11 @@
       }
     }
 
-    // 정렬 변경 이벤트 핸들러
     function handleSortChange(mode) {
       currentSortMode = mode;
       renderGrid();
     }
 
-    // 정렬 로직
     function getSortedList() {
       const list = [...portfolioData];
       const categoryOrder = {
@@ -703,10 +737,8 @@
       };
 
       if (currentSortMode === 'title') {
-        // 이름순 (한국어 로캘 기준 가나다/ABC 정렬)
         list.sort((a, b) => (a.title || '').localeCompare(b.title || '', 'ko'));
       } else if (currentSortMode === 'category') {
-        // 분류순: 지정된 우선순위대로 정렬 후 이름순 보조 정렬
         list.sort((a, b) => {
           const orderA = categoryOrder[a.category] || 99;
           const orderB = categoryOrder[b.category] || 99;
@@ -714,7 +746,6 @@
           return (a.title || '').localeCompare(b.title || '', 'ko');
         });
       } else {
-        // 최신 등록순 (기본)
         list.sort((a, b) => b.id - a.id);
       }
       return list;
@@ -740,7 +771,6 @@
           ? `<span class="badge badge-file">HTML 파일</span>`
           : `<span class="badge badge-link">웹 링크</span>`;
 
-        // 개인 / 공용 뱃지
         const scope = item.scope || '공용';
         const scopeBadge = scope === '공용'
           ? `<span class="badge badge-scope-public">🌐 공용</span>`
@@ -752,9 +782,9 @@
 
         let actionBtn = '';
         if (isFile) {
-          actionBtn = `<button class="btn btn-success btn-sm" onclick="runApp(${item.id})">앱 실행</button>`;
+          actionBtn = `<button class="btn btn-success btn-sm" onclick="requestAppRun(${item.id})">앱 실행</button>`;
         } else if (item.link && item.link !== '#') {
-          actionBtn = `<a href="${escapeHtml(item.link)}" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm">웹 방문</a>`;
+          actionBtn = `<button class="btn btn-primary btn-sm" onclick="requestLinkVisit(${item.id})">웹 방문</button>`;
         }
 
         card.innerHTML = `
@@ -774,7 +804,7 @@
             <span class="card-date">${item.date}</span>
             <div class="card-actions">
               ${actionBtn}
-              <button class="btn btn-secondary btn-sm" onclick="openEditModal(${item.id})">수정</button>
+              <button class="btn btn-secondary btn-sm" onclick="requestEditModal(${item.id})">수정</button>
               <button class="btn btn-secondary btn-sm" onclick="deleteItem(${item.id})">삭제</button>
             </div>
           </div>
@@ -783,10 +813,100 @@
       });
     }
 
+    // 3. 비밀번호 확인 처리 함수들
+    function requestCreateModal() {
+      // 새 작품 등록 시 비밀번호 '1234' 검증
+      promptPasswordCheck(
+        "📝 새 작품 등록 인증",
+        "새 작품을 등록하려면 관리자 비밀번호('1234')를 입력해 주세요.",
+        "1234",
+        () => openCreateModal()
+      );
+    }
+
+    function requestAppRun(id) {
+      const item = portfolioData.find(d => d.id === id);
+      if (!item) return;
+      if (item.scope === '개인') {
+        const expected = item.password || "1234";
+        promptPasswordCheck(
+          "🔒 개인 파일 열람",
+          "개인(비공개) 자료입니다. 비밀번호를 입력해 주세요.",
+          expected,
+          () => runApp(id)
+        );
+      } else {
+        runApp(id);
+      }
+    }
+
+    function requestLinkVisit(id) {
+      const item = portfolioData.find(d => d.id === id);
+      if (!item) return;
+      if (item.scope === '개인') {
+        const expected = item.password || "1234";
+        promptPasswordCheck(
+          "🔒 개인 링크 방문",
+          "개인(비공개) 자료입니다. 비밀번호를 입력해 주세요.",
+          expected,
+          () => window.open(item.link, '_blank', 'noopener,noreferrer')
+        );
+      } else {
+        window.open(item.link, '_blank', 'noopener,noreferrer');
+      }
+    }
+
+    function requestEditModal(id) {
+      const item = portfolioData.find(d => d.id === id);
+      if (!item) return;
+      if (item.scope === '개인') {
+        const expected = item.password || "1234";
+        promptPasswordCheck(
+          "🔒 개인 자료 수정",
+          "개인(비공개) 자료를 수정하려면 비밀번호를 입력해 주세요.",
+          expected,
+          () => openEditModal(id)
+        );
+      } else {
+        openEditModal(id);
+      }
+    }
+
+    function promptPasswordCheck(title, desc, expectedPwd, callback) {
+      expectedAuthPassword = expectedPwd;
+      pendingAuthCallback = callback;
+      document.getElementById('pwdAuthHeading').innerText = title;
+      document.getElementById('pwdAuthDesc').innerText = desc;
+      document.getElementById('inputAuthPassword').value = '';
+      document.getElementById('pwdAuthModal').classList.add('active');
+      document.getElementById('inputAuthPassword').focus();
+    }
+
+    function submitPasswordCheck() {
+      const inputPwd = document.getElementById('inputAuthPassword').value;
+      if (inputPwd === expectedAuthPassword) {
+        closePwdAuthModal();
+        if (pendingAuthCallback) {
+          pendingAuthCallback();
+          pendingAuthCallback = null;
+        }
+      } else {
+        alert("비밀번호가 일치하지 않습니다.");
+        document.getElementById('inputAuthPassword').focus();
+      }
+    }
+
+    function closePwdAuthModal() {
+      document.getElementById('pwdAuthModal').classList.remove('active');
+      pendingAuthCallback = null;
+    }
+
+    // 4. 모달 열기 및 저장 로직
     function openCreateModal() {
       document.getElementById('modalHeading').innerText = "새 작품 등록";
       document.getElementById('editItemId').value = "";
       document.querySelector('input[name="itemScope"][value="공용"]').checked = true;
+      document.getElementById('itemPassword').value = "";
       document.getElementById('itemCategory').value = "수업 혁신";
       document.getElementById('itemTitle').value = "";
       document.getElementById('itemLink').value = "";
@@ -796,6 +916,7 @@
       document.querySelector('input[name="uploadType"][value="file"]').checked = true;
       uploadedHtmlContent = "";
       uploadedFileName = "";
+      toggleScopePassword();
       toggleUploadType();
       document.getElementById('itemModal').classList.add('active');
     }
@@ -811,6 +932,7 @@
       const scopeRadio = document.querySelector(`input[name="itemScope"][value="${scopeVal}"]`);
       if (scopeRadio) scopeRadio.checked = true;
 
+      document.getElementById('itemPassword').value = target.password || "";
       document.getElementById('itemCategory').value = target.category;
       document.getElementById('itemTitle').value = target.title;
       document.getElementById('itemLink').value = target.link || "";
@@ -828,6 +950,7 @@
         document.getElementById('fileStatusText').innerText = "";
       }
 
+      toggleScopePassword();
       toggleUploadType();
       document.getElementById('itemModal').classList.add('active');
     }
@@ -839,6 +962,7 @@
     async function handleSaveItem() {
       const editId = document.getElementById('editItemId').value;
       const scope = document.querySelector('input[name="itemScope"]:checked').value;
+      const password = document.getElementById('itemPassword').value.trim();
       const category = document.getElementById('itemCategory').value;
       const title = document.getElementById('itemTitle').value.trim();
       const type = document.querySelector('input[name="uploadType"]:checked').value;
@@ -863,6 +987,7 @@
       const item = {
         id: editId ? Number(editId) : Date.now(),
         scope,
+        password: scope === '개인' ? (password || "1234") : "",
         category,
         title,
         type,
@@ -943,10 +1068,12 @@
       await openDB();
       portfolioData = await getAllItemsFromDB();
 
+      // 기본 항목(루브릭) 등록은 IndexedDB가 비어있을 때만 최초 1회 실행
       if (portfolioData.length === 0) {
         const defaultItem = {
           id: 1,
           scope: "공용",
+          password: "",
           category: "수업 혁신",
           title: "과정중심 평가 기록 루브릭",
           type: "file",
