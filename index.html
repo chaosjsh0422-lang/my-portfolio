@@ -23,7 +23,8 @@
       --text-main: #1e293b;
       --text-sub: #64748b;
       --primary-color: #4f46e5;
-      --current-font: 'Pretendard', sans-serif;
+      /* 기본 글꼴을 '고운돋움'으로 설정 */
+      --current-font: 'Gowun Dodum', sans-serif;
     }
 
     * {
@@ -83,6 +84,7 @@
     .controls {
       display: flex;
       align-items: center;
+      flex-wrap: wrap;
       gap: 12px;
     }
 
@@ -437,11 +439,20 @@
       </div>
 
       <div class="controls">
+        <!-- 정렬 선택 컨트롤 -->
+        <label for="sortSelect" style="font-size: 0.86rem; font-weight: 700;">정렬</label>
+        <select id="sortSelect" onchange="handleSortChange(this.value)">
+          <option value="latest">최신 등록순</option>
+          <option value="title">이름순 (가나다)</option>
+          <option value="category">분류별</option>
+        </select>
+
+        <!-- 글꼴 선택 컨트롤 (고운돋움 기본 선택) -->
         <label for="fontSelect" style="font-size: 0.86rem; font-weight: 700;">글꼴</label>
         <select id="fontSelect" onchange="changeFont(this.value)">
-          <option value="'Pretendard', sans-serif">프리텐다드 (기본)</option>
+          <option value="'Gowun Dodum', sans-serif" selected>고운돋움 (기본)</option>
+          <option value="'Pretendard', sans-serif">프리텐다드 (깔끔함)</option>
           <option value="'Noto Sans KR', sans-serif">본고딕 (단정함)</option>
-          <option value="'Gowun Dodum', sans-serif">고운돋움 (부드러움)</option>
         </select>
         <button class="btn btn-primary" onclick="openCreateModal()">+ 새 작품 등록</button>
       </div>
@@ -451,7 +462,7 @@
   </div>
 
   <footer>
-    <p>&copy; 2026 Jung Sung Hun. All Rights Reserved.</p>
+    <p>&copy; 2026 Jeong SeongHun. All Rights Reserved.</p>
   </footer>
 
   <!-- 등록 및 수정 모달 -->
@@ -475,7 +486,7 @@
         </div>
       </div>
 
-      <!-- 분류 (기타 반영) -->
+      <!-- 분류 (수업 혁신, 학급 경영, 업무 자동화, 기타) -->
       <div class="form-group">
         <label for="itemCategory">분류</label>
         <select id="itemCategory">
@@ -603,6 +614,7 @@
 
     // 2. 상태 관리 변수
     let portfolioData = [];
+    let currentSortMode = 'latest';
     let uploadedHtmlContent = "";
     let uploadedFileName = "";
     let activeBlobUrl = null;
@@ -674,16 +686,52 @@
       }
     }
 
+    // 정렬 변경 이벤트 핸들러
+    function handleSortChange(mode) {
+      currentSortMode = mode;
+      renderGrid();
+    }
+
+    // 정렬 로직
+    function getSortedList() {
+      const list = [...portfolioData];
+      const categoryOrder = {
+        '수업 혁신': 1,
+        '학급 경영': 2,
+        '업무 자동화': 3,
+        '기타': 4
+      };
+
+      if (currentSortMode === 'title') {
+        // 이름순 (한국어 로캘 기준 가나다/ABC 정렬)
+        list.sort((a, b) => (a.title || '').localeCompare(b.title || '', 'ko'));
+      } else if (currentSortMode === 'category') {
+        // 분류순: 지정된 우선순위대로 정렬 후 이름순 보조 정렬
+        list.sort((a, b) => {
+          const orderA = categoryOrder[a.category] || 99;
+          const orderB = categoryOrder[b.category] || 99;
+          if (orderA !== orderB) return orderA - orderB;
+          return (a.title || '').localeCompare(b.title || '', 'ko');
+        });
+      } else {
+        // 최신 등록순 (기본)
+        list.sort((a, b) => b.id - a.id);
+      }
+      return list;
+    }
+
     function renderGrid() {
       const grid = document.getElementById('portfolioGrid');
       grid.innerHTML = '';
 
-      if (portfolioData.length === 0) {
+      const displayList = getSortedList();
+
+      if (displayList.length === 0) {
         grid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #94a3b8; padding: 40px 0;">등록된 작품이 없습니다. 상단의 [+ 새 작품 등록] 버튼을 눌러보세요.</p>';
         return;
       }
 
-      portfolioData.forEach(item => {
+      displayList.forEach(item => {
         const card = document.createElement('div');
         card.className = 'card';
 
@@ -827,7 +875,6 @@
 
       await saveItemToDB(item);
       portfolioData = await getAllItemsFromDB();
-      portfolioData.sort((a, b) => b.id - a.id);
 
       renderGrid();
       closeModal();
@@ -837,7 +884,6 @@
       if (confirm("이 작품을 삭제하시겠습니까?")) {
         await deleteItemFromDB(id);
         portfolioData = await getAllItemsFromDB();
-        portfolioData.sort((a, b) => b.id - a.id);
         renderGrid();
       }
     }
@@ -913,7 +959,6 @@
         portfolioData = [defaultItem];
       }
 
-      portfolioData.sort((a, b) => b.id - a.id);
       renderGrid();
     });
   </script>
