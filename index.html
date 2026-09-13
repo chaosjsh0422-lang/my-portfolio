@@ -268,7 +268,7 @@
       align-items: center;
     }
 
-    /* 클레이 모달 */
+    /* 클레이 모달 레이어 정의 */
     .modal-backdrop {
       display: none;
       position: fixed;
@@ -282,6 +282,10 @@
 
     .modal-backdrop.active {
       display: flex;
+    }
+
+    #pwdAuthModal {
+      z-index: 200; /* 인증 모달이 입력 모달보다 항상 위에 위치 */
     }
 
     .modal {
@@ -378,7 +382,7 @@
       inset: 0;
       background: rgba(15, 23, 42, 0.8);
       backdrop-filter: blur(6px);
-      z-index: 200;
+      z-index: 300;
       flex-direction: column;
       padding: 24px;
     }
@@ -451,7 +455,6 @@
           <option value="'Pretendard', sans-serif">프리텐다드 (깔끔함)</option>
           <option value="'Noto Sans KR', sans-serif">본고딕 (단정함)</option>
         </select>
-        <!-- 등록 전 비밀번호 '1234' 검증 트리거 -->
         <button class="btn btn-primary" onclick="requestCreateModal()">+ 새 작품 등록</button>
       </div>
     </header>
@@ -484,7 +487,7 @@
         </div>
       </div>
 
-      <!-- 개인 선택 시 비밀번호 입력 (보이지 않게 type="password") -->
+      <!-- 개인 선택 시 비밀번호 입력 -->
       <div class="form-group" id="passwordSection" style="display: none;">
         <label for="itemPassword">개인 열람 비밀번호 설정</label>
         <input type="password" id="itemPassword" placeholder="열람 시 입력할 비밀번호 (미입력 시 기본 1234)" />
@@ -548,7 +551,7 @@
     </div>
   </div>
 
-  <!-- 비밀번호 확인 통합 모달 (등록 인증 및 개인 자료 열람용) -->
+  <!-- 비밀번호 확인 통합 모달 -->
   <div class="modal-backdrop" id="pwdAuthModal">
     <div class="modal" style="max-width: 400px;">
       <h2 id="pwdAuthHeading">🔒 보안 비밀번호 확인</h2>
@@ -557,7 +560,7 @@
       </p>
       <div class="form-group">
         <label for="inputAuthPassword">비밀번호</label>
-        <input type="password" id="inputAuthPassword" placeholder="비밀번호 입력..." onkeyup="if(event.key==='Enter') submitPasswordCheck()" />
+        <input type="password" id="inputAuthPassword" placeholder="비밀번호 입력..." onkeydown="handlePwdKeyDown(event)" />
       </div>
       <div class="modal-actions">
         <button class="btn btn-secondary" onclick="closePwdAuthModal()">취소</button>
@@ -641,9 +644,9 @@
     let uploadedFileName = "";
     let activeBlobUrl = null;
 
-    // 인증 콜백 및 목표 암호 관리
-    let pendingAuthCallback = null;
-    let expectedAuthPassword = "1234";
+    // 인증 콜백 및 비밀번호 추적
+    let currentAuthAction = null;
+    let currentExpectedPassword = "1234";
 
     function triggerFileInput() {
       const input = document.getElementById('htmlFileInput');
@@ -813,10 +816,9 @@
       });
     }
 
-    // 3. 비밀번호 확인 처리 함수들
+    // 3. 비밀번호 확인 처리 함수
     function requestCreateModal() {
-      // 새 작품 등록 시 비밀번호 '1234' 검증
-      promptPasswordCheck(
+      startPasswordAuth(
         "📝 새 작품 등록 인증",
         "새 작품을 등록하려면 관리자 비밀번호('1234')를 입력해 주세요.",
         "1234",
@@ -828,11 +830,10 @@
       const item = portfolioData.find(d => d.id === id);
       if (!item) return;
       if (item.scope === '개인') {
-        const expected = item.password || "1234";
-        promptPasswordCheck(
+        startPasswordAuth(
           "🔒 개인 파일 열람",
           "개인(비공개) 자료입니다. 비밀번호를 입력해 주세요.",
-          expected,
+          item.password || "1234",
           () => runApp(id)
         );
       } else {
@@ -844,11 +845,10 @@
       const item = portfolioData.find(d => d.id === id);
       if (!item) return;
       if (item.scope === '개인') {
-        const expected = item.password || "1234";
-        promptPasswordCheck(
+        startPasswordAuth(
           "🔒 개인 링크 방문",
           "개인(비공개) 자료입니다. 비밀번호를 입력해 주세요.",
-          expected,
+          item.password || "1234",
           () => window.open(item.link, '_blank', 'noopener,noreferrer')
         );
       } else {
@@ -859,49 +859,61 @@
     function requestEditModal(id) {
       const item = portfolioData.find(d => d.id === id);
       if (!item) return;
-      if (item.scope === '개인') {
-        const expected = item.password || "1234";
-        promptPasswordCheck(
-          "🔒 개인 자료 수정",
-          "개인(비공개) 자료를 수정하려면 비밀번호를 입력해 주세요.",
-          expected,
-          () => openEditModal(id)
-        );
-      } else {
-        openEditModal(id);
+      // 공용 항목도 관리자 권한(1234)으로 수정, 개인 항목은 지정 암호로 수정
+      const targetPwd = item.scope === '개인' ? (item.password || "1234") : "1234";
+      startPasswordAuth(
+        "🔒 자료 수정 인증",
+        "자료를 수정하려면 비밀번호를 입력해 주세요.",
+        targetPwd,
+        () => openEditModal(id)
+      );
+    }
+
+    function startPasswordAuth(title, desc, expectedPwd, onConfirmAction) {
+      currentExpectedPassword = String(expectedPwd);
+      currentAuthAction = onConfirmAction;
+
+      document.getElementById('pwdAuthHeading').innerText = title;
+      document.getElementById('pwdAuthDesc').innerText = desc;
+      
+      const pwdInput = document.getElementById('inputAuthPassword');
+      pwdInput.value = '';
+      
+      document.getElementById('pwdAuthModal').classList.add('active');
+      setTimeout(() => pwdInput.focus(), 50);
+    }
+
+    function handlePwdKeyDown(event) {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        submitPasswordCheck();
       }
     }
 
-    function promptPasswordCheck(title, desc, expectedPwd, callback) {
-      expectedAuthPassword = expectedPwd;
-      pendingAuthCallback = callback;
-      document.getElementById('pwdAuthHeading').innerText = title;
-      document.getElementById('pwdAuthDesc').innerText = desc;
-      document.getElementById('inputAuthPassword').value = '';
-      document.getElementById('pwdAuthModal').classList.add('active');
-      document.getElementById('inputAuthPassword').focus();
-    }
-
     function submitPasswordCheck() {
-      const inputPwd = document.getElementById('inputAuthPassword').value;
-      if (inputPwd === expectedAuthPassword) {
+      const inputVal = document.getElementById('inputAuthPassword').value.trim();
+      
+      if (inputVal === currentExpectedPassword) {
+        const actionToExecute = currentAuthAction;
         closePwdAuthModal();
-        if (pendingAuthCallback) {
-          pendingAuthCallback();
-          pendingAuthCallback = null;
+        if (typeof actionToExecute === 'function') {
+          actionToExecute();
         }
       } else {
         alert("비밀번호가 일치하지 않습니다.");
-        document.getElementById('inputAuthPassword').focus();
+        const pwdInput = document.getElementById('inputAuthPassword');
+        pwdInput.value = '';
+        pwdInput.focus();
       }
     }
 
     function closePwdAuthModal() {
       document.getElementById('pwdAuthModal').classList.remove('active');
-      pendingAuthCallback = null;
+      document.getElementById('inputAuthPassword').value = '';
+      currentAuthAction = null;
     }
 
-    // 4. 모달 열기 및 저장 로직
+    // 4. 등록 및 수정 모달 제어
     function openCreateModal() {
       document.getElementById('modalHeading').innerText = "새 작품 등록";
       document.getElementById('editItemId').value = "";
@@ -1006,11 +1018,19 @@
     }
 
     async function deleteItem(id) {
-      if (confirm("이 작품을 삭제하시겠습니까?")) {
-        await deleteItemFromDB(id);
-        portfolioData = await getAllItemsFromDB();
-        renderGrid();
-      }
+      // 삭제 권한 인증 (1234)
+      startPasswordAuth(
+        "🗑️ 자료 삭제 인증",
+        "자료를 삭제하려면 비밀번호('1234')를 입력해 주세요.",
+        "1234",
+        async () => {
+          if (confirm("이 작품을 완전히 삭제하시겠습니까?")) {
+            await deleteItemFromDB(id);
+            portfolioData = await getAllItemsFromDB();
+            renderGrid();
+          }
+        }
+      );
     }
 
     function runApp(id) {
@@ -1068,7 +1088,6 @@
       await openDB();
       portfolioData = await getAllItemsFromDB();
 
-      // 기본 항목(루브릭) 등록은 IndexedDB가 비어있을 때만 최초 1회 실행
       if (portfolioData.length === 0) {
         const defaultItem = {
           id: 1,
